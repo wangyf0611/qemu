@@ -54,6 +54,13 @@ RISCVException smstateen_acc_ok(CPURISCVState *env, int index, uint64_t bit)
     }
 
     if (!(env->mstateen[index] & bit)) {
+        if (virt && index == 0 &&
+            (bit == SMSTATEEN0_AIA ||
+             bit == SMSTATEEN0_IMSIC ||
+             bit == SMSTATEEN0_SVSLCT)) {
+            return RISCV_EXCP_VIRT_INSTRUCTION_FAULT;
+        }
+
         return RISCV_EXCP_ILLEGAL_INST;
     }
 
